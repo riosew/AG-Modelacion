@@ -1,8 +1,13 @@
-package algoritmo;
+package NewVersion;
+
+import java.util.Random;
 
 public class Individuo {//Automaticamente cuando se crea un individuo este muta
+    
+    //Aqui inicializo el contador de las evaluaciones en cero
+    int contEvaluacion = 0;
     char[][] secuencias;
-    int maxAgregar = 3; //Es el numero maximo de GAPS que se le puede agregar en la mutación
+    int maxAgregar = 2; //Es el numero maximo de GAPS que se le puede agregar en la mutación
     
     public Individuo(char[][] entrada){
         secuencias = new char[entrada.length][];
@@ -17,7 +22,28 @@ public class Individuo {//Automaticamente cuando se crea un individuo este muta
         Mutar();
     }
     
+    //Realiza el cruce y empalme entre dos individuos
+    public Individuo cutAndSpliceCrossover(Individuo otroIndividuo) {
+        int puntoCorte = (int) (Math.random() * secuencias[0].length);
+
+        char[][] secuenciasDescendientes = new char[secuencias.length][secuencias[0].length];
+        for (int i = 0; i < secuencias.length; i++) {
+            for (int j = 0; j < secuencias[0].length; j++) {
+                if (j < puntoCorte) {
+                    secuenciasDescendientes[i][j] = secuencias[i][j];
+                } else {
+                    secuenciasDescendientes[i][j] = otroIndividuo.secuencias[i][j];
+                }
+            }
+        }
+
+        return new Individuo(secuenciasDescendientes);
+    }
+    
     public int Calificar(){//Califica segun las columnas que se tiene
+        
+        //Aqui mando llamar el contador, el cual ira en aunmento segun se utilice el metodo Calificar
+        contEvaluacion++;
         int cal = 0;
         String letras = "";
         for (int i = 0; i < secuencias[0].length; i++) {

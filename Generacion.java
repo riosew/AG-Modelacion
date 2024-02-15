@@ -1,4 +1,4 @@
-package algoritmo;
+package NewVersion;
 
 public class Generacion {
     int num = 4; //Usamos un numero multiplo de 4 (4, 8, 12, 16, 20, ...) para la reproducccion cada pareja tiene 4 hijos por eso es multiplo de 4
@@ -13,6 +13,59 @@ public class Generacion {
             poblacion[i] = new Individuo(x);//por cada i se crea un nuevo individuo
         }
     }
+    
+    public Generacion(int num, char[][] entrada) {
+        this.num = num;
+        poblacion = new Individuo[num];
+
+        for (int i = 0; i < num; i++) {
+            poblacion[i] = new Individuo(entrada);
+        }
+    }
+    // Cruza y aqui se valida si cambio la secuencia
+    public void realizarCruza(Generacion otraGeneracion) {
+        for (int i = 0; i < num; i++) {
+            Individuo padre1 = poblacion[i];
+            Individuo padre2 = otraGeneracion.poblacion[i];
+            Individuo descendiente = padre1.cutAndSpliceCrossover(padre2);
+            
+            String cambios = identificarCambios(padre1.secuencias, descendiente.secuencias);
+            
+            if (!cambios.isEmpty()) {
+               //System.out.println("En el individuo " + i + " la secuencia ha cambiado después de la cruza:");
+               System.out.println(cambios);
+            } else {
+               //System.out.println("En el individuo " + i + " la secuencia no ha cambiado después de la cruza.");
+            }
+            
+            poblacion[i] = descendiente;
+        }
+    }
+    
+public String identificarCambios(char[][] secuenciaOriginal, char[][] secuenciaNueva) {
+    // Comparar las secuencias y determinar qué partes han cambiado
+    // Devolver una cadena que muestra los cambios
+    StringBuilder cambios = new StringBuilder();
+
+    int filas = secuenciaOriginal.length;
+    int columnas = secuenciaOriginal[0].length;  // Suponiendo que todas las filas tienen la misma longitud
+
+    if (filas != secuenciaNueva.length || columnas != secuenciaNueva[0].length) {
+        cambios.append("");
+    } else {
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                if (secuenciaOriginal[i][j] != secuenciaNueva[i][j]) {
+                    cambios.append("Cambio en la posición [" + i + "][" + j + "]: ");
+                    cambios.append(secuenciaOriginal[i][j] + " -> " + secuenciaNueva[i][j]);
+                    cambios.append("\n");
+                }
+            }
+        }
+    }
+
+    return cambios.toString();
+}
 
     public void Ordenar(){//ordeno la poblacion dependiendo su calificacion
         for (int i = 0; i < num; i++) {
